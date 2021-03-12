@@ -1,1 +1,1 @@
-python -m torch.distributed.launch --nproc_per_node 2 DDP_practice.py
+python -m torch.distributed.launch --nproc_per_node 2 DDP_practice.py --device 0,1

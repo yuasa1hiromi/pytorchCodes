@@ -12,7 +12,7 @@ import numpy as np
 import math
 import datetime
 
-def get_now_time(fmt='%Y_%m_%d-%H_%M_%S_%f'):
+def get_now_time(fmt='%Y_%m_%d-%H_%M_%S'):
     return datetime.datetime.now().strftime(fmt)
 
 def time_synchronized(device=None):
@@ -67,7 +67,14 @@ def torch_distributed_zero_first(local_rank: int):
     if local_rank == 0:
         torch.distributed.barrier()
 
-def select_device(device='', batch_size=None):
+def my_print_logger(info, logger=None):
+    if logger:
+        logger.info(info)
+    else:
+        print(info)
+
+# set CUDA_VISIBLE_DEVICES and check batch size
+def select_device(device='', batch_size=None, logger=None):
     # device = 'cpu' or '0' or '0,1,2,3'
     cpu_request = device.lower() == 'cpu'
     if device and not cpu_request:  # if device requested other than 'cpu'
@@ -85,10 +92,10 @@ def select_device(device='', batch_size=None):
         for i in range(0, ng):
             if i == 1:
                 s = ' ' * len(s)
-            print("%sCUDA:%g (%s, %dMB)" % (s, i, x[i].name, x[i].total_memory / c))
+            print_info = "%sCUDA:%g (%s, %dMB)" % (s, i, x[i].name, x[i].total_memory / c)
+            my_print_logger(print_info, logger)
     else:
-        print(f'Using torch {torch.__version__} CPU')
-
+        my_print_logger(f'Using torch {torch.__version__} CPU', logger)
     print('')  # skip a line
     return torch.device('cuda:0' if cuda else 'cpu')
 
@@ -108,13 +115,8 @@ def init_seeds(seed=0):
     init_torch_seeds(seed)
 
 if __name__ == "__main__":
-    a = MovingAverageMeter()
-    N = 10**6
-    start = time.time()
-    for i in range(N):
-        a.update(i)
-
-    print(time.time() - start)
+    re = int(os.environ['RANK'])
+    print(re)
 
 
     pass
