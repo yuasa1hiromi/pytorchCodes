@@ -229,7 +229,7 @@ def run_train(opt, device, logger):
 def main1():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--batch-size", type=int, default=256, help="batch size")
-    parser.add_argument("-l", "--lr", type=float, default=0.001, help="learning rate")
+    parser.add_argument("-l", "--lr", type=float, default=0.01, help="learning rate")
     parser.add_argument("-e", "--epochs", type=int, default=100, help="epochs")
     parser.add_argument("--num_workers", type=int, default=4, help="num_workers for dataloader")
     parser.add_argument("--local_rank", type=int, default=-1, help="DDP parameter, do not modify")
