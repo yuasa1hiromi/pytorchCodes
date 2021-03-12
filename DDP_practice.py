@@ -157,7 +157,7 @@ def run_train(opt, device, logger):
     training_show = ('%10s' + '%13s' + '%11s') % ("Epoch", 'max_gpu_mem', 'loss')
 
     loss_fn = nn.CrossEntropyLoss().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=opt.lr)  # set optimizer after DDP model
+    optimizer = optim.SGD(model.parameters(), lr=opt.lr)  # set optimizer after DDP model
     best_acc = 0
 
     logger.info('Start training for %d epochs...' % (epochs))
@@ -271,7 +271,8 @@ def main1():
 
     if first_rank:
         os.makedirs(osp.join(save_dir, 'weights'), exist_ok=True)
-
+        with open(opt.train_log, 'w') as f:
+            f.write("\nopt: %s\n" % str(opt))
     run_train(opt, device, logger)
 
 # DDP mode: launch with "python -m torch.distributed.launch --nproc_per_node"
